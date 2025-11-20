@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 
 // Type declaration for Electron API
@@ -12,12 +13,12 @@ declare global {
     };
   }
 }
-import { 
-  Search, 
-  Grid, 
-  List, 
-  Star, 
-  Clock, 
+import {
+  Search,
+  Grid,
+  List,
+  Star,
+  Clock,
   Users,
   ExternalLink,
   Heart,
@@ -27,28 +28,38 @@ import { RootState } from '../../store';
 import { setSchemes, setFilters, saveScheme, unsaveScheme } from '../../store/slices/schemeSlice';
 import { schemes } from '../../data/schemes';
 import { checkEligibility } from '../../utils/eligibilityChecker';
-import { Scheme } from '../../types';
+import { Scheme, TranslatedString } from '../../types';
 
 const SchemesPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { darkMode } = useSelector((state: RootState) => state.ui);
+  const { darkMode, language } = useSelector((state: RootState) => state.ui);
   const { user } = useSelector((state: RootState) => state.auth);
   const { savedSchemes, filters } = useSelector((state: RootState) => state.scheme);
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [filteredSchemes, setFilteredSchemes] = useState(schemes);
+
+  // Helper to get translated content
+  const getContent = (content: TranslatedString | string) => {
+    if (typeof content === 'string') return content;
+    return content[language as keyof TranslatedString] || content.en;
+  };
 
   useEffect(() => {
     dispatch(setSchemes(schemes));
   }, [dispatch]);
 
   useEffect(() => {
-    let filtered = schemes.filter(scheme => 
-      scheme.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      scheme.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      scheme.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    let filtered = schemes.filter(scheme => {
+      const name = getContent(scheme.name).toLowerCase();
+      const description = getContent(scheme.description).toLowerCase();
+      const category = scheme.category.toLowerCase();
+      const term = searchTerm.toLowerCase();
+
+      return name.includes(term) || description.includes(term) || category.includes(term);
+    });
 
     if (filters.category !== 'all') {
       filtered = filtered.filter(scheme => scheme.category === filters.category);
@@ -63,7 +74,7 @@ const SchemesPage: React.FC = () => {
     }
 
     setFilteredSchemes(filtered);
-  }, [searchTerm, filters]);
+  }, [searchTerm, filters, language]);
 
   const handleSaveScheme = (schemeId: string) => {
     if (savedSchemes.includes(schemeId)) {
@@ -121,20 +132,19 @@ const SchemesPage: React.FC = () => {
             <div className="flex items-center space-x-2 mb-2">
               <div className={`w-3 h-3 rounded-full ${getCategoryColor(scheme.category)}`}></div>
               <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                {scheme.name}
+                {getContent(scheme.name)}
               </h3>
             </div>
-            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-3`}>
-              {scheme.description}
+            <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-3 line-clamp-2`}>
+              {getContent(scheme.description)}
             </p>
           </div>
           <button
             onClick={() => handleSaveScheme(scheme.id)}
-            className={`p-2 rounded-lg transition-colors ${
-              isSaved 
-                ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20' 
-                : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-            }`}
+            className={`p-2 rounded-lg transition-colors ${isSaved
+              ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
+              : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
           >
             <Heart size={20} fill={isSaved ? 'currentColor' : 'none'} />
           </button>
@@ -143,22 +153,20 @@ const SchemesPage: React.FC = () => {
         {eligibilityResult && (
           <div className="mb-4">
             <div className="flex items-center space-x-2">
-              <div className={`w-2 h-2 rounded-full ${
-                eligibilityResult.eligible 
-                  ? 'bg-green-500' 
-                  : eligibilityResult.probability > 50 
-                  ? 'bg-yellow-500' 
+              <div className={`w-2 h-2 rounded-full ${eligibilityResult.eligible
+                ? 'bg-green-500'
+                : eligibilityResult.probability > 50
+                  ? 'bg-yellow-500'
                   : 'bg-red-500'
-              }`}></div>
-              <span className={`text-sm font-medium ${
-                eligibilityResult.eligible 
-                  ? 'text-green-600' 
-                  : eligibilityResult.probability > 50 
-                  ? 'text-yellow-600' 
+                }`}></div>
+              <span className={`text-sm font-medium ${eligibilityResult.eligible
+                ? 'text-green-600'
+                : eligibilityResult.probability > 50
+                  ? 'text-yellow-600'
                   : 'text-red-600'
-              }`}>
-                {eligibilityResult.eligible 
-                  ? 'Fully Eligible' 
+                }`}>
+                {eligibilityResult.eligible
+                  ? t('dashboard.eligibleSchemes')
                   : `${eligibilityResult.probability}% Match`
                 }
               </span>
@@ -167,8 +175,8 @@ const SchemesPage: React.FC = () => {
         )}
 
         <div className="mb-4">
-          <p className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-            {scheme.benefits}
+          <p className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} line-clamp-2`}>
+            {getContent(scheme.benefits)}
           </p>
         </div>
 
@@ -176,7 +184,7 @@ const SchemesPage: React.FC = () => {
           <div className="flex items-center space-x-1">
             <Clock size={14} className="text-gray-400" />
             <span className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
-              {scheme.processingTime}
+              {getContent(scheme.processingTime)}
             </span>
           </div>
           <div className="flex items-center space-x-1">
@@ -205,25 +213,23 @@ const SchemesPage: React.FC = () => {
           </span>
           {scheme.deadline && (
             <span className="text-sm px-3 py-1 bg-orange-50 text-orange-600 rounded-full dark:bg-orange-900/20">
-              Deadline: {new Date(scheme.deadline).toLocaleDateString()}
+              {new Date(scheme.deadline).toLocaleDateString()}
             </span>
           )}
         </div>
 
         <button
           onClick={() => {
-            // For Electron apps, use shell.openExternal to open in default browser
             if (window.electron && window.electron.shell) {
               window.electron.shell.openExternal(scheme.applicationLink);
             } else {
-              // Fallback for web version
               window.open(scheme.applicationLink, '_blank');
             }
           }}
           className="w-full bg-gradient-to-r from-orange-500 to-green-500 text-white py-2 px-4 rounded-lg font-medium hover:from-orange-600 hover:to-green-600 transition-all duration-200 flex items-center justify-center space-x-2"
         >
           <ExternalLink size={16} />
-          <span>Apply Now</span>
+          <span>{t('scheme.apply')}</span>
         </button>
       </motion.div>
     );
@@ -234,10 +240,10 @@ const SchemesPage: React.FC = () => {
       {/* Header */}
       <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 shadow-lg`}>
         <h1 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-          Government Schemes
+          {t('scheme.title')}
         </h1>
         <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
-          Discover and apply for government benefits and schemes
+          {t('scheme.subtitle')}
         </p>
       </div>
 
@@ -246,19 +252,17 @@ const SchemesPage: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-              darkMode ? 'text-gray-400' : 'text-gray-500'
-            }`} size={20} />
+            <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${darkMode ? 'text-gray-400' : 'text-gray-500'
+              }`} size={20} />
             <input
               type="text"
-              placeholder="Search schemes..."
+              placeholder={t('scheme.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
-                darkMode 
-                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                  : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
-              } focus:outline-none focus:ring-2 focus:ring-orange-500`}
+              className={`w-full pl-10 pr-4 py-2 rounded-lg border ${darkMode
+                ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
+                } focus:outline-none focus:ring-2 focus:ring-orange-500`}
             />
           </div>
 
@@ -266,13 +270,12 @@ const SchemesPage: React.FC = () => {
           <select
             value={filters.category}
             onChange={(e) => dispatch(setFilters({ category: e.target.value }))}
-            className={`px-4 py-2 rounded-lg border ${
-              darkMode 
-                ? 'bg-gray-700 border-gray-600 text-white' 
-                : 'bg-gray-50 border-gray-300 text-gray-900'
-            } focus:outline-none focus:ring-2 focus:ring-orange-500`}
+            className={`px-4 py-2 rounded-lg border ${darkMode
+              ? 'bg-gray-700 border-gray-600 text-white'
+              : 'bg-gray-50 border-gray-300 text-gray-900'
+              } focus:outline-none focus:ring-2 focus:ring-orange-500`}
           >
-            <option value="all">All Categories</option>
+            <option value="all">{t('scheme.allCategories')}</option>
             <option value="agriculture">Agriculture</option>
             <option value="education">Education</option>
             <option value="healthcare">Healthcare</option>
@@ -286,11 +289,10 @@ const SchemesPage: React.FC = () => {
           <select
             value={filters.difficulty}
             onChange={(e) => dispatch(setFilters({ difficulty: e.target.value }))}
-            className={`px-4 py-2 rounded-lg border ${
-              darkMode 
-                ? 'bg-gray-700 border-gray-600 text-white' 
-                : 'bg-gray-50 border-gray-300 text-gray-900'
-            } focus:outline-none focus:ring-2 focus:ring-orange-500`}
+            className={`px-4 py-2 rounded-lg border ${darkMode
+              ? 'bg-gray-700 border-gray-600 text-white'
+              : 'bg-gray-50 border-gray-300 text-gray-900'
+              } focus:outline-none focus:ring-2 focus:ring-orange-500`}
           >
             <option value="all">All Difficulties</option>
             <option value="Easy">Easy</option>
@@ -302,25 +304,23 @@ const SchemesPage: React.FC = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg ${
-                viewMode === 'grid' 
-                  ? 'bg-orange-500 text-white' 
-                  : darkMode 
-                    ? 'bg-gray-700 text-gray-400' 
-                    : 'bg-gray-200 text-gray-600'
-              }`}
+              className={`p-2 rounded-lg ${viewMode === 'grid'
+                ? 'bg-orange-500 text-white'
+                : darkMode
+                  ? 'bg-gray-700 text-gray-400'
+                  : 'bg-gray-200 text-gray-600'
+                }`}
             >
               <Grid size={20} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg ${
-                viewMode === 'list' 
-                  ? 'bg-orange-500 text-white' 
-                  : darkMode 
-                    ? 'bg-gray-700 text-gray-400' 
-                    : 'bg-gray-200 text-gray-600'
-              }`}
+              className={`p-2 rounded-lg ${viewMode === 'list'
+                ? 'bg-orange-500 text-white'
+                : darkMode
+                  ? 'bg-gray-700 text-gray-400'
+                  : 'bg-gray-200 text-gray-600'
+                }`}
             >
               <List size={20} />
             </button>
@@ -332,15 +332,14 @@ const SchemesPage: React.FC = () => {
       <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 shadow-lg`}>
         <div className="flex items-center justify-between mb-6">
           <h2 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-            {filteredSchemes.length} Schemes Found
+            {filteredSchemes.length} {t('scheme.allSchemes')}
           </h2>
         </div>
 
-        <div className={`grid ${
-          viewMode === 'grid' 
-            ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
-            : 'grid-cols-1'
-        } gap-6`}>
+        <div className={`grid ${viewMode === 'grid'
+          ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+          : 'grid-cols-1'
+          } gap-6`}>
           {filteredSchemes.map((scheme, index) => (
             <SchemeCard key={scheme.id} scheme={scheme} index={index} />
           ))}
@@ -349,7 +348,7 @@ const SchemesPage: React.FC = () => {
         {filteredSchemes.length === 0 && (
           <div className="text-center py-12">
             <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              No schemes found matching your criteria
+              {t('scheme.noSchemes')}
             </p>
             <button
               onClick={() => {
@@ -358,7 +357,7 @@ const SchemesPage: React.FC = () => {
               }}
               className="mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors"
             >
-              Clear Filters
+              {t('scheme.clearFilters')}
             </button>
           </div>
         )}

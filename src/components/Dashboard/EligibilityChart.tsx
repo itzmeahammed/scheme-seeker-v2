@@ -13,11 +13,11 @@ const EligibilityChart: React.FC<EligibilityChartProps> = ({ eligibilityTrends }
 
   if (!eligibilityTrends) {
     return (
-      <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 shadow-lg`}>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl p-6 shadow-lg border`}>
+        <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
           Eligibility Overview
         </h3>
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className={darkMode ? 'text-gray-300' : 'text-gray-500'}>
           Complete your profile to see your eligibility analysis
         </p>
       </div>
@@ -51,8 +51,8 @@ const EligibilityChart: React.FC<EligibilityChartProps> = ({ eligibilityTrends }
   ];
 
   return (
-    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 shadow-lg`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+    <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl p-6 shadow-lg border`}>
+      <h3 className={`text-lg font-semibold mb-6 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
         Eligibility Analysis
       </h3>
 
@@ -121,10 +121,10 @@ const EligibilityChart: React.FC<EligibilityChartProps> = ({ eligibilityTrends }
             </div>
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className={`text-sm font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                   {item.label}
                 </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+                <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
                   {item.percentage}%
                 </span>
               </div>
@@ -143,8 +143,8 @@ const EligibilityChart: React.FC<EligibilityChartProps> = ({ eligibilityTrends }
 
       {/* Insights */}
       <div className={`mt-6 p-4 rounded-lg ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-        <h4 className="font-medium text-gray-900 dark:text-white mb-2">Insights</h4>
-        <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+        <h4 className={`font-medium mb-2 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>Insights</h4>
+        <ul className={`text-sm space-y-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
           <li>• You're eligible for {eligible} out of {totalSchemes} schemes</li>
           <li>• {partiallyEligible} schemes require minor adjustments</li>
           <li>• Your strongest category is {topCategory}</li>

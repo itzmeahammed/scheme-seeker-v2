@@ -60,8 +60,8 @@ const RecentActivity: React.FC = () => {
   };
 
   return (
-    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 shadow-lg`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+    <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl p-6 shadow-lg border`}>
+      <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
         Recent Activity
       </h3>
 
@@ -69,9 +69,8 @@ const RecentActivity: React.FC = () => {
         {activities.map((activity, index) => (
           <motion.div
             key={activity.id}
-            className={`flex items-start space-x-3 p-3 rounded-lg ${
-              darkMode ? 'bg-gray-900' : 'bg-gray-50'
-            } hover:shadow-sm transition-all duration-200`}
+            className={`flex items-start space-x-3 p-3 rounded-lg ${darkMode ? 'bg-gray-900' : 'bg-gray-50'
+              } hover:shadow-sm transition-all duration-200`}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
@@ -80,15 +79,15 @@ const RecentActivity: React.FC = () => {
               <activity.icon size={16} />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-gray-900 dark:text-white text-sm">
+              <h4 className={`font-medium text-sm ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
                 {activity.title}
               </h4>
-              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+              <p className={`text-xs mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 {activity.description}
               </p>
               <div className="flex items-center mt-2">
                 <Clock size={12} className="text-gray-400 mr-1" />
-                <span className="text-xs text-gray-500 dark:text-gray-400">
+                <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
                   {activity.timestamp}
                 </span>
               </div>

@@ -18,10 +18,16 @@ export interface UserProfile {
   familySize: number;
 }
 
+export interface TranslatedString {
+  en: string;
+  hi: string;
+  te: string;
+}
+
 export interface Scheme {
   id: string;
-  name: string;
-  description: string;
+  name: TranslatedString;
+  description: TranslatedString;
   category: string;
   eligibility: {
     age?: [number, number];
@@ -33,14 +39,14 @@ export interface Scheme {
     landOwnership?: boolean;
     educationLevel?: string[];
   };
-  benefits: string;
-  docsRequired: string[];
+  benefits: TranslatedString;
+  docsRequired: TranslatedString[];
   applicationLink: string;
   deadline?: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   rating: number;
   successRate: number;
-  processingTime: string;
+  processingTime: TranslatedString;
 }
 
 export interface ChatMessage {
@@ -59,4 +65,37 @@ export interface EligibilityResult {
   probability: number;
   missingCriteria: string[];
   improvementTips: string[];
+}
+
+export interface GuideStep {
+  id: string;
+  title: TranslatedString;
+  description: TranslatedString;
+  content: TranslatedString;
+  imageUrl?: string;
+  videoUrl?: string;
+  tips?: TranslatedString[];
+  completed?: boolean;
+}
+
+export interface Guide {
+  id: string;
+  title: TranslatedString;
+  description: TranslatedString;
+  category: string;
+  type: 'video' | 'article' | 'pdf' | 'interactive';
+  duration?: string;
+  rating: number;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  thumbnail: string;
+  tags: string[];
+  videoUrl?: string;
+  articleContent?: TranslatedString;
+  pdfUrl?: string;
+  steps?: GuideStep[];
+  views: number;
+  likes: number;
+  author: string;
+  publishedDate: string;
+  completionRate?: number;
 }

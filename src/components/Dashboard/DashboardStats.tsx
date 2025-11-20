@@ -7,13 +7,11 @@ import { RootState } from '../../store';
 interface DashboardStatsProps {
   eligibilityTrends: any;
   savedSchemesCount: number;
-  recommendedSchemesCount: number;
 }
 
 const DashboardStats: React.FC<DashboardStatsProps> = ({
   eligibilityTrends,
-  savedSchemesCount,
-  recommendedSchemesCount
+  savedSchemesCount
 }) => {
   const { darkMode } = useSelector((state: RootState) => state.ui);
 
@@ -72,7 +70,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
       y: 0,
       opacity: 1,
       transition: {
-        type: 'spring',
+        type: 'spring' as const,
         stiffness: 100
       }
     }
@@ -88,7 +86,7 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
       {stats.map((stat, index) => (
         <motion.div
           key={index}
-          className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer`}
+          className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl p-6 shadow-lg border hover:shadow-xl transition-all duration-300 cursor-pointer`}
           variants={itemVariants}
           whileHover={{ scale: 1.02 }}
         >
@@ -101,10 +99,10 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
             </div>
           </div>
           <div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            <p className={`text-2xl font-bold mb-1 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
               {stat.value}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               {stat.title}
             </p>
           </div>

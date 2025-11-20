@@ -2,13 +2,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { 
-  TrendingUp, 
-  Award, 
-  Clock, 
-  CheckCircle, 
-  Users, 
-  Target,
+import {
+  Award,
   ArrowRight,
   Star
 } from 'lucide-react';
@@ -32,7 +27,7 @@ const Dashboard: React.FC = () => {
     dispatch(setSchemes(schemes));
   }, [dispatch]);
 
-  const recommendedSchemes = user?.profile 
+  const recommendedSchemes = user?.profile
     ? getRecommendedSchemes(schemes, user.profile)
     : [];
 
@@ -56,7 +51,7 @@ const Dashboard: React.FC = () => {
       y: 0,
       opacity: 1,
       transition: {
-        type: 'spring',
+        type: 'spring' as const,
         stiffness: 100
       }
     }
@@ -71,15 +66,15 @@ const Dashboard: React.FC = () => {
     >
       {/* Welcome Header */}
       <motion.div
-        className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 shadow-lg border border-gray-200`}
+        className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} rounded-xl p-6 shadow-lg border`}
         variants={itemVariants}
       >
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 className={`text-2xl font-bold ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
               {t('dashboard.welcome')} {user?.name || 'Citizen'}! 🇮🇳
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className={`mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Your gateway to government benefits and schemes
             </p>
           </div>
@@ -94,10 +89,9 @@ const Dashboard: React.FC = () => {
 
       {/* Stats Cards */}
       <motion.div variants={itemVariants}>
-        <DashboardStats 
+        <DashboardStats
           eligibilityTrends={eligibilityTrends}
           savedSchemesCount={savedSchemes.length}
-          recommendedSchemesCount={recommendedSchemes.length}
         />
       </motion.div>
 
@@ -112,30 +106,30 @@ const Dashboard: React.FC = () => {
         {/* Right Column - Activity & Quick Actions */}
         <motion.div className="space-y-6" variants={itemVariants}>
           <RecentActivity />
-          
+
           {/* Quick Actions */}
-          <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 shadow-lg`}>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 shadow-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <h3 className={`text-lg font-semibold mb-4 ${darkMode ? 'text-gray-100' : 'text-gray-900'}`}>
               Quick Actions
             </h3>
             <div className="space-y-3">
               <button className="w-full flex items-center justify-between p-3 bg-orange-50 hover:bg-orange-100 dark:bg-orange-900/20 dark:hover:bg-orange-900/40 rounded-lg transition-colors">
-                <span className="font-medium text-orange-700 dark:text-orange-400">
+                <span className={`font-medium ${darkMode ? 'text-orange-300' : 'text-orange-700'}`}>
                   Update Profile
                 </span>
-                <ArrowRight size={16} className="text-orange-600" />
+                <ArrowRight size={16} className={darkMode ? 'text-orange-400' : 'text-orange-600'} />
               </button>
               <button className="w-full flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/40 rounded-lg transition-colors">
-                <span className="font-medium text-green-700 dark:text-green-400">
+                <span className={`font-medium ${darkMode ? 'text-green-300' : 'text-green-700'}`}>
                   Chat with Assistant
                 </span>
-                <ArrowRight size={16} className="text-green-600" />
+                <ArrowRight size={16} className={darkMode ? 'text-green-400' : 'text-green-600'} />
               </button>
               <button className="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-lg transition-colors">
-                <span className="font-medium text-blue-700 dark:text-blue-400">
+                <span className={`font-medium ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>
                   View All Schemes
                 </span>
-                <ArrowRight size={16} className="text-blue-600" />
+                <ArrowRight size={16} className={darkMode ? 'text-blue-400' : 'text-blue-600'} />
               </button>
             </div>
           </div>

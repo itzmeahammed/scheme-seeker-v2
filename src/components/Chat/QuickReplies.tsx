@@ -28,11 +28,10 @@ const QuickReplies: React.FC<QuickRepliesProps> = ({ onQuickReply }) => {
           <motion.button
             key={index}
             onClick={() => onQuickReply(reply)}
-            className={`px-3 py-1 text-sm rounded-full border transition-colors ${
-              darkMode
-                ? 'border-gray-600 text-gray-300 hover:bg-gray-800'
-                : 'border-gray-300 text-gray-600 hover:bg-gray-100'
-            }`}
+            className={`px-4 py-2 text-sm rounded-full border-2 transition-all duration-200 font-medium ${darkMode
+                ? 'border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-orange-500 hover:text-orange-400'
+                : 'border-gray-300 text-gray-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-green-50 hover:border-orange-400 hover:text-orange-600'
+              }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, y: 10 }}

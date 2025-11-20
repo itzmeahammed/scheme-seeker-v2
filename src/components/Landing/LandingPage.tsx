@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import heroImage from '../../landing_hero_illustration_1763623695938.png';
 import {
   ArrowRight,
   Zap,
@@ -208,7 +209,7 @@ const LandingPage: React.FC = () => {
           >
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/50 backdrop-blur-sm">
               <img
-                src="../src/landing_hero_illustration_1763623695938.png"
+                src={heroImage}
                 alt="SchemeSeeker Benefits"
                 className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700"
               />
